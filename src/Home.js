@@ -16,7 +16,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 
 import Services from './services/service';
-import {_} from 'lodash'
+import {_} from 'lodash';
 class Home extends Component {
   constructor(props) {
     super(props);
@@ -40,13 +40,13 @@ class Home extends Component {
 
     this.setState({
       data: response[0],
-      casesByCountry: response[1]
+      casesByCountry: response[1],
     });
 
-    const threshold = _.maxBy(this.state.casesByCountry.countries_stat, 'deaths');
-    await this.state.casesByCountry.countries_stat.forEach(country => {
-      if(this.state.threshold < country.deaths){
-        this.setState({threshold: Number(country.deaths.replace(',', ''))});
+    this.state.casesByCountry.countries_stat.forEach(country => {
+      const deaths = Number(country.deaths.replace(',', ''));
+      if (deaths > this.state.threshold) {
+        this.setState({threshold: deaths});
       }
     });
   };
@@ -54,9 +54,23 @@ class Home extends Component {
   getRateOfCountry(country) {
     const deaths = Number(country.deaths.replace(',', ''));
     const rate = (100 * deaths) / this.state.threshold;
+    let color = '';
+    if (rate <= 20) {
+      color = '#00ac46';
+    } else if (20 < rate && rate <= 40) {
+      color = '#fdc500';
+    } else if (40 < rate && rate <= 60) {
+      color = '#fd8c00';
+    } else if (60 < rate && rate <= 80) {
+      color = '#d96b0b ';
+    } else if (rate > 80) {
+      color = '#ff2d19';
+    }
+
     return {
       width: `${rate}%`,
-      backgroundColor: 'red',
+      backgroundColor: color,
+      borderRadius: 5,
     };
   }
 
@@ -183,20 +197,16 @@ const styles = StyleSheet.create({
   countryContainer: {
     flexDirection: 'row',
     height: 40,
-    borderWidth: 2,
+    borderWidth: 1,
     marginLeft: 15,
     marginRight: 15,
     marginTop: 10,
     borderRadius: 5,
-    backgroundColor: '#ffffff',
+    backgroundColor: '#d6d6d6',
     position: 'relative',
+    borderColor: '#d6d6d6'
   },
 
-  countryRate: {
-    width: '50%',
-    backgroundColor: 'red',
-    borderRadius: 3,
-  },
   countryName: {
     position: 'absolute',
     left: 10,
@@ -204,7 +214,7 @@ const styles = StyleSheet.create({
     fontWeight: '700',
   },
   coutryInfoAmount: {
-    color: '#888',
+    color: '#363636',
     fontWeight: '700',
     right: 10,
     top: 10,
