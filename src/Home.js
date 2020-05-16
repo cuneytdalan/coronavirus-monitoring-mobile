@@ -38,6 +38,8 @@ class Home extends Component {
       throw err;
     });
 
+    console.log('response in home', response);
+
     this.setState({
       data: response[0],
       casesByCountry: response[1],
@@ -126,7 +128,7 @@ class Home extends Component {
           <View>
             {this.state.casesByCountry.countries_stat.map((country, key) => (
               <View style={styles.countryContainer} key={key}>
-                <View style={this.getRateOfCountry(country)}></View>
+                <View style={this.getRateOfCountry(country)} />
                 <Text style={styles.countryName}>{country.country_name}</Text>
                 <Text style={styles.coutryInfoAmount}>
                   {country.deaths}
@@ -204,7 +206,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     backgroundColor: '#d6d6d6',
     position: 'relative',
-    borderColor: '#d6d6d6'
+    borderColor: '#d6d6d6',
   },
 
   countryName: {
